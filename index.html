@@ -190,8 +190,7 @@
             } else {
                 $('#prevButton').hide();
             }
-               
-            if(nextTargetIndex <= jsonDataSet.length) {
+            if(nextTargetIndex < jsonDataSet.length) {
                 $('#nextButton').show();
                 $('#nextButton').click(function(e) { modalController(nextTargetIndex, jsonDataSet); return false; });
             } else {
