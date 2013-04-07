@@ -1,22 +1,54 @@
+#blogContent {
+    height: 600px;
+    overflow: hidden;
+}
+            
+.thumbnails [class^="span"] {
+    border-left: 0;
+}
 
-
-/* ==========================================================================
-   Author's custom styles
-   ========================================================================== */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ul[id*='portfolioList_'] {
+    position: relative;   
+}
+            
+ul[id*='portfolioList_'] li {
+    padding: 10px;   
+}
+            
+ul[id*='portfolioList_'] [class*="span"]:first-child {
+    margin-left: 2.5641%;
+}
+            
+.imageContainer {}
+            
+.imageContainer:before, .imageContainer:after {
+    content:"";
+    display:table;
+}
+.imageContainer:after {
+    clear:both;
+}
+            
+.imageContainer li {
+    transition:
+    opacity 0.4s linear,
+    transform 0.4s ease-in-out,
+    box-shadow 0.4s ease-in-out;
+    -webkit-backface-visibility: hidden
+}
+            
+.imageContainer li.blur {
+    transform: scale(0.9);
+    opacity: 0.7;
+}
+            
+.imageContainer li.blur a {
+    color: rgba(0, 0, 0, 0);
+    opacity: 0.5;   
+}
+            
+.imageContainer li.active {
+    transform: scale(1.05);
+    z-index: 100;  
+    opacity: 1;
+}

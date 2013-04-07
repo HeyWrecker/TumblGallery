@@ -6,19 +6,24 @@
         <title></title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
-		
-		<link rel="stylesheet" href="css/normalize.min.css">
+
+        <link rel="stylesheet" href="css/normalize.min.css">
         <link rel="stylesheet" href="css/main.css">
+        <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet" />
+        <link href="http://static.tumblr.com/jizkqch/z48mij8rw/css_heywrecker_v2.css" rel="stylesheet" />
+        
         <script src="http://code.jquery.com/jquery-latest.js"></script>
         <script src="http://code.jquery.com/ui/jquery-ui-git.js"></script>
-		<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
-        <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet" />
+        <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
         
-        <style>
-            .thumbnails [class^="span"] {
-                border-left: 0;
-            }
-        </style>
+        <script src="js/views.js"></script>
+        <script src="js/models.js"></script>
+        <script src="js/controllers.js"></script>
+        
+        
+        
+
         
     </head>
     <body>
@@ -29,217 +34,38 @@
         <!-- This code is taken from http://twitter.github.com/bootstrap/examples/hero.html -->
 
         <script>
-        
-        $('document').ready(function () {
-    		loadTumblog('insert_blog_name', 'insert_api_key', 'text', 'photo', 'true', 0, 50);
-		});
-        
-        function loadTumblog(blog, apiKey, filter, type, notes, offset, limit) {
-            $.ajax({
-    			url: 'http://api.tumblr.com/v2/blog/' + blog + '/posts?filter=' + filter + '&type=' + type + '&notes_info=' + notes + '&offset=' + offset + '&limit=' + limit,
-				method: 'get',
-				data : ({
-				api_key :apiKey,
-				jsonp : 'constructPage'
-			}),
-			dataType: "jsonp"
-			});
-        }
-        
-        function constructPage(data) {
-            var jsonDataSet = modelData(data);
-            generatePageHTML(jsonDataSet);
-        }
-        
-        function modelData(data) {
-		    var posts = data.response.posts;
-            var photo = [];
-            var caption = '';
-            var tags    = '';
-            var jsonDataSet = [];
-            var finalDataSet = [];
             
-            $(posts).each(function(index, element){
-                var photoSets   = element.photos;
-                caption         = element.caption;
-                tags            = element.tags;
-                
-                
-                $(photoSets).each(function(index2, element) {
-                   
-                   var photos = element.alt_sizes;
-                   
-                   $(photos).each(function(index, element) {
-                       
-                       var item = element;
-                       
-                       
-                       
-                       if(item.width == 75) {
-                           
-                           //console.log(index);
-                           
-                            var uID                 = photos[1].url;
-                            uID                     = uID.substring(0, uID.length - 4)
-                            uID                     = uID.substring(60);
-                           
-                            jsonDataSet.push( {
-                                "photo" : {
-                                "thumbWidth" : item.width,
-                                "thumbHeight" : item.height,
-                                "thumbURL"  : item.url,
-                                "highResWidth": photos[1].width,
-                                "highResHeight" : photos[1].height,
-                                "highResURL" : photos[1].url,
-                                "imageCaption": caption,
-                                "imageTags" : tags,
-                                "uID" : uID,
-                                
-                                }
-                           });
-                       }
-                       
-                   });
-                }); 
-            });
+            var blogInfo = [
+                {
+                    'blogName'      : 'www.heywrecker.com',
+                    'blogKey'       : 'iB3q929XG1Bh0zEe9JWagKOoQuCjCWWNu7OUMxlQSRgFrH4C65',
+                    'postFilter'    : 'html',
+                    'postType'      : 'photo',
+                    'noteInfo'      : 'true',
+                    'postOffset'    : '0',
+                    'postLimit'     : ''
+                }
+            ];
             
-            $(jsonDataSet).each(function(index, element) {
-                
-               finalDataSet.push( {
-                    "photo": {
-                        "index" : index,
-                        "thumbWidth" : element.photo.thumbWidth,
-                        "thumbHeight" : element.photo.thumbHeight,
-                        "thumbURL"  : element.photo.thumbURL,
-                        "highResWidth": element.photo.highResWidth,
-                        "highResHeight" : element.photo.highResHeight,
-                        "highResURL" : element.photo.highResURL,
-                        "imageCaption": element.photo.imageCaption,
-                        "imageTags" : element.photo.imageTags,
-                        "uID" : element.photo.uID
-                    }
-                    
-                    
-                });
-            });
-            
-            return finalDataSet;
-         }
-         
-        
-        
-        function generatePageHTML(jsonDataSet) {
-            var content = '<ul id="portfolioList" class="unstyled thumbnails span12">';
-            
-            $(jsonDataSet).each(function(index, element) {
-                
-                content += '<li class="span3">';
-                
-                content += '<a href="#" class="thumbnails"><img id="portfolioItem_' + element.photo.uID + '" src="' + element.photo.thumbURL + '" width="' + element.photo.thumbWidth + '" height="' + element.photo.thumbHeight + '" data-index="' + element.photo.index  +'" class="img-circle" style="border: 1px solid #ffffff;" /></a>';
-                
-                content += '</li>';
-              
-            });
-            
-            content += '</ul>';
-            
-            $('#blogContent').append(content);
-            
-            $('a.thumbnails').click(function(e){ triggerModal(e, jsonDataSet); return false; });
-          
-           
-        }
-        
-        function generateModalPage(currentTargetIndex, jsonDataSet) {
-            var currentTargetIndex  = eval(currentTargetIndex);
-            var tagContent          = '';
-            var prevTargetIndex     =   currentTargetIndex - 1;
-            var nextTargetIndex     =   currentTargetIndex + 1;
-            
-            $(jsonDataSet).each(function(index, element) {
-               if(currentTargetIndex == element.photo.index) {
-                   
-                    $('#largePortfolioImage').attr('src', element.photo.highResURL);
-                    $('#largePortfolioImage').attr('width', element.photo.highResWidth);
-                    $('#largePortfolioImage').attr('height', element.photo.highResHeight);
-                    
-                    if(element.photo.imageCaption != '') {
-                        $('#caption').html(element.photo.imageCaption);
-                    }
-                    
-                    if(element.photo.imageTags != '') {
-                        $(element.photo.imageTags).each(function(index, element) {
-                            tagContent += '<span class="label label-info" style="margin-right: 5px; margin-bottom: 5px;"><i class="icon-tag icon-white"></i>' + element + '</span>';
-                        });
-                    }
-                    
-                   
-                
-                $('#tags').html(tagContent)
-                    
-               }
-               
-              
-               
-               
-            });
-            
-            if(prevTargetIndex >= 0) {
-                $('#prevButton').show();
-                $('#prevButton').click(function(e) { modalController(prevTargetIndex, jsonDataSet); return false; });
-            } else {
-                $('#prevButton').hide();
-            }
-            if(nextTargetIndex < jsonDataSet.length) {
-                $('#nextButton').show();
-                $('#nextButton').click(function(e) { modalController(nextTargetIndex, jsonDataSet); return false; });
-            } else {
-                $('#nextButton').hide();
-            }
-       }
-       
-        function modalController(index, jsonDataSet) {
-                    
-                    $('#largePortfolioImage').attr('height', '');
-                    $('#largePortfolioImage').attr('width', '');
-                    $('#largePortfolioImage').attr('src', '');
-                    $('#caption').html('');
-                    $('#tags').html('');
-                    generateModalPage(index, jsonDataSet);
-        }
-        
-        function triggerModal(target, jsonDataSet) {
-            
-            var currentTargetIndex = $(target.target).attr('data-index');
-            var loadItemResult = generateModalPage(currentTargetIndex, jsonDataSet);
-            
-            //Call BS Modal
-            $('#portfolioModal').modal('show');
-            
-            $('#xButton').click(function(e){ closeModal(); return false; });
-            $('#closeButton').click(function(e){ closeModal(); return false; });
-        }
-        
-        function closeModal() {
-             
-             //Close Modal
-            $('#portfolioModal').modal('hide')
-             
-             //Clear out modal interior
-            $('#largePortfolioImage').attr('height', '');
-            $('#largePortfolioImage').attr('width', '');
-            $('#largePortfolioImage').attr('src', '');
-            $('#caption').html('');
-            $('#tags').html('');
-            
-        }
-		
-		
-        
+            $('document').ready(function () {
+        	    if(typeof(Storage)!=="undefined") {
+                   loadTumblogLimit(blogInfo[0].blogName, blogInfo[0].blogKey, blogInfo[0].postFilter, blogInfo[0].postType);
+                } else {
+                    alert('Your browser does not support the HTML5 sessionStorage object.');
+                }
 
-	</script>
-        <div class="container">
-            <div class="row">
+            });
+        </script>
+        
+        
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="offset8 span2">
+                    <button id="prevPage" class="btn disabled"><i class="icon-chevron-down"></i></button>
+                    <button id="nextPage" class="btn" value="1"><i class="icon-chevron-up"></i></button>
+                </div>
+            </div>
+            <div class="row-fluid">
                 <!-- Modal -->
                 <div id="portfolioModal" style="width: 900px; margin-left: -420px;" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <!--<div class="modal-header">
@@ -248,14 +74,14 @@
                     </div>
                     -->
                     <div class="modal-body" style="max-height: 900px;">
-                        <div class="row">
-                            <div class="span5">
+                        <div class="row-fluid">
+                            <div class="span6">
                                 <div class="well" style="background-color: #eeeeee; padding-left: 10px;">
                                     <img id="largePortfolioImage" class="img-polaroid" style="margin-left: auto; margin-right: auto; display: block;" />
                                 </div>
                             </div>
-                            <div class="span3">
-                                <p id="caption"></p>
+                            <div class="span6">
+                                <div id="caption"></div>
                                 <div id="tags"></div>
                             </div>
                         </div>
@@ -270,8 +96,9 @@
                 </div>
                 
                 
-                <div id="blogContent"></div>
+                <div id="blogContent" class="span12"></div>
             </div>
+            
     </body>
 </html>
    
