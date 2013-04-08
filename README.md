@@ -1,6 +1,7 @@
 TumblGallery
 ============
-4/8/2013 Version 1.2.2
+Version 1.2.2
+(4/8/2013 )
 
 - Speed improvements within modal window image pagination.
 
