@@ -25,6 +25,86 @@ function controllerButtonState() {
     });
 }
 
+function controllerModalButtonState(previousTargetIndex, nextTargetIndex) {
+    
+    var dataSet = JSON.parse(sessionStorage.blogDataSet);
+    
+    if(previousTargetIndex >= 0) {
+        $('#prevButton').removeClass('disabled');
+    } else {
+        $('#prevButton').addClass('disabled');
+    }
+    
+    if(dataSet.blogImages[nextTargetIndex] !== undefined) {
+        $('#nextButton').removeClass('disabled');
+    } else {
+        $('#nextButton').addClass('disabled');      
+    }
+}
+
+function controllerModalImage(event, direction, index) {
+    var currentIndex = index
+    , previousTargetIndex
+    , nextTargetIndex
+    , tagContent = ''
+    , dataSet = JSON.parse(sessionStorage.blogDataSet);
+    
+    switch(direction) {
+        case 'next':
+            
+            nextTargetIndex = eval(currentIndex) + 1;
+            
+            if(dataSet.blogImages[nextTargetIndex] !== undefined) {
+                $('#nextButton').removeClass('disabled');
+                $('#largePortfolioImage').attr('height', dataSet.blogImages[nextTargetIndex].highResHeight);
+                $('#largePortfolioImage').attr('width', dataSet.blogImages[nextTargetIndex].highResWidth);
+                $('#largePortfolioImage').attr('src', dataSet.blogImages[nextTargetIndex].highResURL);
+                $('#largePortfolioImage').attr('data-index', dataSet.blogImages[nextTargetIndex].index);
+                
+                if(dataSet.blogImages[nextTargetIndex].imageCaption !== '') {
+                    $('#caption').html(dataSet.blogImages[nextTargetIndex].imageCaption);
+                }
+                
+                if(dataSet.blogImages[nextTargetIndex].imageTags !== undefined) {
+                    for(var key in dataSet.blogImages[nextTargetIndex].imageTags) {
+                        tagContent += '<span class="label label-info" style="margin-right: 5px; margin-bottom: 5px;"><i class="icon-tag icon-white"></i>' + dataSet.blogImages[nextTargetIndex].imageTags[key] + '</span>';
+                    }
+                }
+                
+                $('#tags').html(tagContent);
+            } else {
+                $('#nextButton').addClass('disabled');
+            }
+            break;
+        
+        case 'previous':
+            previousTargetIndex = eval(currentIndex) - 1;
+            
+            if(dataSet.blogImages[previousTargetIndex] !== undefined) {
+                $('#prevButton').removeClass('disabled');
+                $('#largePortfolioImage').attr('height', dataSet.blogImages[previousTargetIndex].highResHeight);
+                $('#largePortfolioImage').attr('width', dataSet.blogImages[previousTargetIndex].highResWidth);
+                $('#largePortfolioImage').attr('src', dataSet.blogImages[previousTargetIndex].highResURL);
+                $('#largePortfolioImage').attr('data-index', dataSet.blogImages[previousTargetIndex].index);
+                
+                if(dataSet.blogImages[previousTargetIndex].imageCaption !== '') {
+                    $('#caption').html(dataSet.blogImages[previousTargetIndex].imageCaption);
+                }
+                
+                if(dataSet.blogImages[previousTargetIndex].imageTags !== undefined) {
+                    for(var key in dataSet.blogImages[previousTargetIndex].imageTags) {
+                        tagContent += '<span class="label label-info" style="margin-right: 5px; margin-bottom: 5px;"><i class="icon-tag icon-white"></i>' + dataSet.blogImages[previousTargetIndex].imageTags[key] + '</span>';
+                    }
+                }
+                
+                $('#tags').html(tagContent);
+            } else {
+                $('prevButton').addClass('disabled');
+            }
+            break;
+    }
+}
+
 function controllerPagination(event, direction) {
             
     var activeChildIndex
@@ -115,16 +195,6 @@ function controllerPagination(event, direction) {
                      
                 break;
     }
-}
-
-function controllerModalImage(index, dataSet) {
-                    
-    //$('#largePortfolioImage').attr('height', '');
-    //$('#largePortfolioImage').attr('width', '');
-    $('#largePortfolioImage').attr('src', '');
-    $('#caption').html('');
-    $('#tags').html('');
-    viewModalPage(index, dataSet);
 }
 
 function triggerModal(target) {

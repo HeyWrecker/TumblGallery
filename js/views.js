@@ -6,21 +6,21 @@ function viewPageHTML() {
     var dataSet = JSON.parse(sessionStorage.blogDataSet)
     , content
     ,ul;
-            
+    
     $('#blogContent').hide();
-            
-    $(dataSet[0].blogImages).each(function (index, element) {
-        if (index % 18 === 0)  {
+    
+    for(var key in dataSet.blogImages) {
+        if(key % 18 === 0) {
             $('#blogContent').append(ul);
-            ul = $('<ul>', {'id': 'portfolioList_' + index, 'class' : 'clearfix imageContainer'});
+            ul = $('<ul>', {'id': 'portfolioList_' + key, 'class' : 'clearfix imageContainer'});
         }
-                
-        content = '<a href="#" class="thumbnails"><img id="portfolioItem_' + element.photo.uID + '" src="' + element.photo.thumbURL + '" width="' + element.photo.thumbWidth + '" height="' + element.photo.thumbHeight + '" data-index="' + element.photo.index  +'" class="img-circle" style="border: 1px solid #ffffff;" /></a>';
+        
+        content = '<a href="#" class="thumbnails"><img id="portfolioItem_' + dataSet.blogImages[key].uID + '" src="' + dataSet.blogImages[key].thumbURL + '" width="' + dataSet.blogImages[key].thumbWidth + '" height="' + dataSet.blogImages[key].thumbHeight + '" data-index="' + dataSet.blogImages[key].index  +'" class="img-circle" style="border: 1px solid #ffffff;" /></a>';
                 
         var li = $('<li>', {'class' : 'span3'}).append(content);
         ul.append(li);
-    });
-            
+    }
+    
     $('#blogContent').append(ul);
             
     $('#blogContent ul:nth-child(1n + 1)').hide();
@@ -31,6 +31,8 @@ function viewPageHTML() {
     $('a.thumbnails').click(function(e){ triggerModal(e); return false; });
     $('#nextPage').click(function(e) { controllerPagination(e, 'up'); return false; });
     $('#prevPage').click(function(e) { controllerPagination(e, 'down'); return false; });
+    $('#prevButton').click(function(e) { controllerModalImage(e, 'previous', $(largePortfolioImage).attr('data-index')); return false; });
+    $('#nextButton').click(function(e) { controllerModalImage(e, 'next', $(largePortfolioImage).attr('data-index')); return false; });
 }
 
 function viewModalPage(currentTargetIndex) {
@@ -38,51 +40,28 @@ function viewModalPage(currentTargetIndex) {
     , tagContent          = ''
     , prevTargetIndex     =   currentTargetIndex - 1
     , nextTargetIndex     =   currentTargetIndex + 1
-    , dataSet = $.parseJSON(sessionStorage.blogDataSet);
+    , dataSet = $.parseJSON(sessionStorage.blogDataSet)
+    , selectedObject = dataSet.blogImages[currentTargetIndex];
     
-    for(i = 0; i < dataSet[0].blogImages.length; i++) {
-        
-       
-        if(currentTargetIndex == dataSet[0].blogImages[i].photo.index) {
-            
-             $('#largePortfolioImage').attr('src', dataSet[0].blogImages[i].photo.highResURL);
-            $('#largePortfolioImage').attr('width', dataSet[0].blogImages[i].photo.highResWidth);
-            $('#largePortfolioImage').attr('height', dataSet[0].blogImages[i].photo.highResHeight);
-                    
-            if(dataSet[0].blogImages[i].photo.imageCaption !== '') {
-                $('#caption').html(dataSet[0].blogImages[i].photo.imageCaption);
-            }
-                    
-            if(dataSet[0].blogImages[i].photo.imageTags !== '') {
+    controllerModalButtonState(prevTargetIndex, nextTargetIndex);
+    
+    $('#largePortfolioImage').attr('src', selectedObject.highResURL);
+    $('#largePortfolioImage').attr('width', selectedObject.highResWidth);
+    $('#largePortfolioImage').attr('height', selectedObject.highResHeight);
+    $('#largePortfolioImage').attr('data-index', selectedObject.index);
+    
+    if(selectedObject.imageCaption !== '') {
+        $('#caption').html(selectedObject.imageCaption);
+    }
+    
+    if(selectedObject.imageTags !== '') {
                 
-                for(j = 0; j < dataSet[0].blogImages[i].photo.imageTags.length; j++) {
-                    tagContent += '<span class="label label-info" style="margin-right: 5px; margin-bottom: 5px;"><i class="icon-tag icon-white"></i>' + dataSet[0].blogImages[i].photo.imageTags[j] + '</span>';
+        for(i = 0; i < selectedObject.imageTags.length; i++) {
+            tagContent += '<span class="label label-info" style="margin-right: 5px; margin-bottom: 5px;"><i class="icon-tag icon-white"></i>' + selectedObject.imageTags[i] + '</span>';
                    
-                }
-               
-            }
-            
-            $('#tags').html(tagContent);
-            break;    
         }
-       
+               
     }
-    
-    if(prevTargetIndex >= 0) {
-        //$('#prevButton').show();
-        $('#prevButton').removeClass('disabled');
-        $('#prevButton').click(function(e) { controllerModalImage(prevTargetIndex, $(dataSet[0].blogImages)); return false; });
-    } else {
-        //$('#prevButton').hide();
-        $('#prevButton').addClass('disabled');
-    }
-        
-    if(nextTargetIndex < $(dataSet[0].blogImages).length) {
-       // $('#nextButton').show();
-        $('#nextButton').removeClass('disabled');
-        $('#nextButton').click(function(e) { controllerModalImage(nextTargetIndex, $(dataSet[0].blogImages)); return false; });
-    } else {
-        //$('#nextButton').hide();
-        $('#nextButton').addClass('disabled');      
-    }
+            
+    $('#tags').html(tagContent);
 }         

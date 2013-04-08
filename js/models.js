@@ -6,7 +6,7 @@ function loadTumblogLimit(blog, apiKey, filter, type, notes, offset, limit) {
             api_key : apiKey,
             jsonp : 'loadTumblogPosts',
             initialOffset:offset
-        }),
+            }),
         dataType: "jsonp"
     });
 }
@@ -37,82 +37,86 @@ function loadTumblogPosts(data) {
 
 function modelData(data) {
     var posts = data.response.posts;
-    var photo = [];
+    var photo = {};
     var caption = '';
     var tags    = '';
     var postID  =   '';
-    var photoSetIndex   = '';
-    var jsonDataSet = [];
-    var finalDataSet = [];
-    var tmpDataSet = [];
+    var photoSetIndex;
+    var jsonDataSet = { };
+    var photo;
+    var finalDataSet = {};
+    var tmpDataSet = {};
+    var dataSetIndex = 0;
+     
+     
+    for(var key1 in posts) {
+        var photoSets = posts[key1].photos
+        , caption       = posts[key1].caption
+        , tags          = posts[key1].tags
+        , postID        = posts[key1].id
+        , photoSetIndex = [key1];
+       
+        
+        for(var key2 in photoSets) {
+            var photo = photoSets[key2];
+            var photoIndex = [key2];
+           
             
-    $(posts).each(function(index, element){
-        var photoSets   = element.photos;
-        caption         = element.caption;
-        tags            = element.tags;
-        postID          = element.id;
-
-        $(photoSets).each(function(index2, element) {
-                       
-            var photos = element.alt_sizes;
-                       
-            $(photos).each(function(index, element) {
-                           
-                var item = element;
-                
-                if(item.width == 75) {
-                    var uID                 = photos[1].url;
+            for(var key3 in photo.alt_sizes) {
+                if(photo.alt_sizes[key3].width == 75) {
+                   
+                    var uID                 = photo.alt_sizes[key3].url;
                     uID                     = uID.substring(0, uID.length - 4);
                     uID                     = uID.substring(60);
-                               
-                    jsonDataSet.push({
-                        "photo" : {
-                        "thumbWidth"        : item.width,
-                        "thumbHeight"       : item.height,
-                        "thumbURL"          : item.url,
-                        "highResWidth"      : photos[1].width,
-                        "highResHeight"     : photos[1].height,
-                        "highResURL"        : photos[1].url,
-                        "imageCaption"      : caption,
-                        "imageTags"         : tags,
-                        "uID"               : uID,
-                        "postID"            : postID,
-                        "photoSetIndex"     : index2
-                        }
-                    });
-                }
-                           
-            });
-        }); 
-    });
-                
-    $(jsonDataSet).each(function(index, element) {
                     
-        tmpDataSet.push( {
-            "photo": {
-                "index"                     : index,
-                "thumbWidth"                : element.photo.thumbWidth,
-                "thumbHeight"               : element.photo.thumbHeight,
-                "thumbURL"                  : element.photo.thumbURL,
-                "highResWidth"              : element.photo.highResWidth,
-                "highResHeight"             : element.photo.highResHeight,
-                "highResURL"                : element.photo.highResURL,
-                "imageCaption"              : element.photo.imageCaption,
-                "imageTags"                 : element.photo.imageTags,
-                "uID"                       : element.photo.uID,
-                "postID"                    : element.photo.postID,
-                "photoSetIndex"             : element.photo.photoSetIndex
+                    jsonDataSet[dataSetIndex] = {
+                            "index"             : dataSetIndex,
+                            "thumbWidth"        : photo.alt_sizes[key3].width,
+                            "thumbHeight"       : photo.alt_sizes[key3].height,
+                            "thumbURL"          : photo.alt_sizes[key3].url,
+                            "highResWidth"      : photo.alt_sizes[1].width,
+                            "highResHeight"     : photo.alt_sizes[1].height,
+                            "highResURL"        : photo.alt_sizes[1].url,
+                            "imageCaption"      : caption,
+                            "imageTags"         : tags,
+                            "uID"               : uID,
+                            "postID"            : postID,
+                            "photoSetIndex"     : photoSetIndex
+                        
+                    } 
+                    dataSetIndex = dataSetIndex + 1;
+                }
             }
-        });
-    });
-                
-    finalDataSet.push( {
+            
+        }
+     
+    }
+   
+    for(var key in jsonDataSet) {
+        tmpDataSet[key] = {
+            "index"                     : jsonDataSet[key].index,
+            "thumbWidth"                : jsonDataSet[key].thumbWidth,
+            "thumbHeight"               : jsonDataSet[key].thumbHeight,
+            "thumbURL"                  : jsonDataSet[key].thumbURL,
+            "highResWidth"              : jsonDataSet[key].highResWidth,
+            "highResHeight"             : jsonDataSet[key].highResHeight,
+            "highResURL"                : jsonDataSet[key].highResURL,
+            "imageCaption"              : jsonDataSet[key].imageCaption,
+            "imageTags"                 : jsonDataSet[key].imageTags,
+            "uID"                       : jsonDataSet[key].uID,
+            "postID"                    : jsonDataSet[key].postID,
+            "photoSetIndex"             : jsonDataSet[key].photoSetIndex
+        }
+        dataSetIndex = dataSetIndex + 1;
+    }
+    
+    finalDataSet = {
         'blogInfo'   : {
             'postCount' : data.response.total_posts,
         }, 
-        'blogImages' : tmpDataSet
-    });
-    
+        'blogImages' : jsonDataSet
+    }
+
     sessionStorage.blogDataSet = JSON.stringify(finalDataSet);
             
     constructViewPage();
