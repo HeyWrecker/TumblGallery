@@ -1,5 +1,5 @@
 #blogContent {
-    height: 600px;
+    height: 700px;
     overflow: hidden;
 }
             
@@ -12,11 +12,13 @@ ul[id*='portfolioList_'] {
 }
             
 ul[id*='portfolioList_'] li {
-    padding: 10px;   
+    padding: 0;
+
 }
             
 ul[id*='portfolioList_'] [class*="span"]:first-child {
-    margin-left: 2.5641%;
+    /*margin-left: 2.5641%;*/
+
 }
             
 .imageContainer {}

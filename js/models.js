@@ -1,41 +1,67 @@
 function loadTumblogLimit(blog, apiKey, filter, type, notes, offset, limit) {
-    $.ajax({
+    var test = $.ajax({
         url: 'http://api.tumblr.com/v2/blog/' + blog + '/posts?filter=' + filter + '&type=' + type + '&notes_info=' + notes + '&offset=' + offset + '&limit=' + limit,
         method: 'get',
         data : ({
             api_key : apiKey,
-            jsonp : 'loadTumblogPosts',
             initialOffset:offset
             }),
-        dataType: "jsonp"
-    });
+        dataType: "jsonp",
+        success: function(data) {
+            loadTumblogPosts(data, false);
+        }
+
+    })
 }
-            
-function loadTumblogPosts(data) {
-            
-    if(data.meta.status == 200) {
+
+function loadTumblogPosts(data, isFilter) {
+    var isModelDataSuccess = false;
+    
+    if(isFilter !== false) {
+        $.ajax({
+                url: 'http://api.tumblr.com/v2/blog/' + blogInfo[0].blogName + '/posts?filter=' + blogInfo[0].postFilter + '&type=' + blogInfo[0].postType + '&notes_info=' + blogInfo[0].notesInfo + '&offset=' + blogInfo[0].postOffset + '&limit=' + data.postLimit + '&tag=' + data.filterString,
+                method: 'get',
+                data : ({
+                    api_key :blogInfo[0].blogKey,
+                    initialOffset:blogInfo[0].postOffset
+                    }),
+                dataType: "jsonp",
+                success: function(data) {
+                    isModelDataSuccess = modelData(data);
                     
-        var postLimit   =  data.response.total_posts;
-        
+                    if(isModelDataSuccess === true) {
+                        controllerButtonState();
+                        $('#blogContent').fadeToggle();
+                    }
+                    
+                }
+            })
+      
+    } else {
+        var postLimit = data.response.total_posts;
+            
         $.ajax({
             url: 'http://api.tumblr.com/v2/blog/' + blogInfo[0].blogName + '/posts?filter=' + blogInfo[0].postFilter + '&type=' + blogInfo[0].postType + '&notes_info=' + blogInfo[0].notesInfo + '&offset=' + blogInfo[0].postOffset + '&limit=' + postLimit,
             method: 'get',
             data : ({
                 api_key :blogInfo[0].blogKey,
-                jsonp : 'modelData',
                 initialOffset:blogInfo[0].postOffset
                 }),
-            dataType: "jsonp"
+            dataType: "jsonp",
+            success: function(data) {
+                isModelDataSuccess = modelData(data);
+                if(isModelDataSuccess === true) {
+                    controllerButtonState();
+                    $('#blogContent').fadeToggle();
+                }
+            }
         });
-                   
-        } else {
-            content = '<div class="alert alert-block"><h4>An Error Occurred</h4><p>There was an error retrieving the requested information from Tumblr. Please try again later.</p></div>';
-            $('#blogContent').append(content);
     }
 }
             
 
 function modelData(data) {
+    
     var posts = data.response.posts;
     var photo = {};
     var caption = '';
@@ -47,7 +73,6 @@ function modelData(data) {
     var finalDataSet = {};
     var tmpDataSet = {};
     var dataSetIndex = 0;
-     
      
     for(var key1 in posts) {
         var photoSets = posts[key1].photos
@@ -91,7 +116,7 @@ function modelData(data) {
         }
      
     }
-   
+    
     for(var key in jsonDataSet) {
         tmpDataSet[key] = {
             "index"                     : jsonDataSet[key].index,
@@ -116,8 +141,13 @@ function modelData(data) {
         }, 
         'blogImages' : jsonDataSet
     }
-
+    
+    sessionStorage.clear();
+    
     sessionStorage.blogDataSet = JSON.stringify(finalDataSet);
-            
-    constructViewPage();
+    
+    isConstructionComplete = constructViewPage();
+    
+    return isConstructionComplete;
+
 }
