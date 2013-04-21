@@ -1,5 +1,11 @@
 TumblGallery
 ============
+Version 1.3.1
+(4/21/2013)
+- Added fade transition between paging.
+- Added right/left paging option.
+- Reformatted default layout.
+
 Version 1.3.0
 (4/20/2013 )
 
