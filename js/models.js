@@ -38,8 +38,8 @@ function loadTumblogPosts(data, isFilter) {
                     if(isModelDataSuccess === true) {
                         controllerButtonState();
                         $('#blogContent').fadeToggle();
-                        $('#nextPage').fadeToggle();
-                        $('#prevPage').fadeToggle();
+                        $('#nextPage').fadeIn();
+                        $('#prevPage').fadeIn();
                     }
                     
                 }
@@ -61,8 +61,8 @@ function loadTumblogPosts(data, isFilter) {
                 if(isModelDataSuccess === true) {
                     controllerButtonState();
                     $('#blogContent').fadeToggle();
-                    $('#nextPage').fadeToggle();
-                    $('#prevPage').fadeToggle();
+                    $('#nextPage').fadeIn();
+                    $('#prevPage').fadeIn();
                 }
             }
         });
