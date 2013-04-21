@@ -38,7 +38,7 @@ function viewPageHTML() {
     for(var key in dataSet.blogImages) {
         if(key % 18 === 0) {
             $('#blogContent').append(ul);
-            ul = $('<ul>', {'id': 'portfolioList_' + key, 'class' : 'clearfix imageContainer thumbnails'});
+            ul = $('<ul>', {'id': 'portfolioList_' + key, 'class' : 'clearfix imageContainer thumbnails pagination-centered'});
         }
         
         content = '<a href="#" class="thumbnail-target"><img id="portfolioItem_' + dataSet.blogImages[key].uID + '" src="' + dataSet.blogImages[key].thumbURL + '" width="' + dataSet.blogImages[key].thumbWidth + '" height="' + dataSet.blogImages[key].thumbHeight + '" data-index="' + dataSet.blogImages[key].index  +'" class="img-polaroid" style="border: 1px solid #ffffff;" /></a>';
@@ -50,9 +50,14 @@ function viewPageHTML() {
     $('#blogContent').append(ul);
             
     $('#blogContent ul:nth-child(1n + 1)').hide();
-    $('#blogContent ul:nth-child(1)').show();
-            
+    //$('#blogContent ul:nth-child(1)').show();
+     $('#blogContent ul:nth-child(1)').css({display:'inline-block'});      
     //$('#blogContent').fadeToggle();
+    
+    if(blogInfo[0].paginationType == 'horizontal') {
+        $('#nextPage').addClass('horizontal');   
+        $('#prevPage').addClass('horizontal');   
+    }
     
    return true;
     

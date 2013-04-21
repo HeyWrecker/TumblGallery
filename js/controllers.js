@@ -11,8 +11,8 @@ function controllerRemoveListeners() {
 function controllerAddListeners() {
     $('a.thumbnail-target').click(function(e){ triggerModal(e); return false; });
     $('a.filter').click(function(e){ controllerFilter(e); return false; });
-    $('#nextPage').click(function(e) { controllerPagination(e, 'up'); return false; });
-    $('#prevPage').click(function(e) { controllerPagination(e, 'down'); return false; });
+    $('#nextPage').click(function(e) { controllerPagination(e, 'up', blogInfo[0].paginationType); return false; });
+    $('#prevPage').click(function(e) { controllerPagination(e, 'down', blogInfo[0].paginationType); return false; });
     $('#prevButton').click(function(e) { controllerModalImage(e, 'previous', $(largePortfolioImage).attr('data-index')); return false; });
     $('#nextButton').click(function(e) { controllerModalImage(e, 'next', $(largePortfolioImage).attr('data-index')); return false; });   
 }
@@ -179,7 +179,7 @@ function controllerModalImage(event, direction, index) {
     }
 }
 
-function controllerPagination(event, direction) {
+function controllerPagination(event, direction, paginationType) {
             
     var activeChildIndex
     , activeChildID
@@ -188,7 +188,6 @@ function controllerPagination(event, direction) {
     , previousChildIndex
     , previousChildID;
              
-            
     switch(direction) {
         case 'up':
             // Set active and next child ID and class.
@@ -207,24 +206,56 @@ function controllerPagination(event, direction) {
             });
     
             if(nextChildID !== '') {
-                $('#' + activeChildID).animate({
-                    top: '-700',
-                    display: 'show'
-                            
-                }, 800, function() {
-                    // Active child animation complete. Hide active child.
-                    $('#' + activeChildID).hide();
-                           
-                    // Begin next child animation.
-                    $('#' + nextChildID).css('top', +700);
-                           
-                    $('#' + nextChildID).animate({
-                        display: 'show',
-                        top: '-0'
-                        }, 800, function() {
-                        controllerButtonState();
-                    });
-                });
+                if(paginationType == 'horizontal') {
+                    
+                    $('#' + activeChildID).css({opacity : 1})
+                        .animate(
+                            {
+                             opacity: 0,
+                             left : '100%'
+                            }, 800, function() {
+                                $('#' + activeChildID).hide();
+                              
+                                $('#' + nextChildID).css({top : 0, opacity: 0, left : '-100%'})
+                                    .stop()
+                                    //.show()
+                                    .css({display:'inline-block'})
+                                    .animate(
+                                        { 
+                                            opacity: 1, left : 0 
+                                        }, 800,
+                                        function() {
+                                            controllerButtonState();
+                                        }
+                                    );
+                            }
+                        );
+                   
+                } else if (paginationType == 'vertical') {
+                    
+                    $('#' + activeChildID).css({opacity : 1})
+                        .animate(
+                            {
+                             opacity: 0,
+                             top : '-700'
+                            }, 800, function() {
+                                $('#' + activeChildID).hide();
+                              
+                                $('#' + nextChildID).css({top : 700, opacity: 0})
+                                    .stop()
+                                    //.show()
+                                    .css({display:'inline-block'})
+                                    .animate(
+                                        { 
+                                            opacity: 1, top : 0 
+                                        }, 800,
+                                        function() {
+                                            controllerButtonState();
+                                        }
+                                    );
+                            }
+                        );
+                }
             }
             break;
                     
@@ -246,22 +277,59 @@ function controllerPagination(event, direction) {
                 });
                      
                 if(previousChildID !== '') {
-                    // Begin active child down page animation.
-                    $('#' + activeChildID).animate({
-                        top: '+700',
-                        display: 'hide'
-                        }, 800, function() {
-                            // Active child animation complete. Hide active child.
-                            $('#' + activeChildID).hide();
-                            
-                            // Begin previous child down page animation.
-                            $('#' + previousChildID).animate({
-                                top: '+0',
-                                display: 'show'
-                             }, 800, function() {
-                                controllerButtonState();
-                            });
-                        });
+                    if(paginationType == 'horizontal') {
+                        
+                         $('#' + activeChildID).css({opacity : 1})
+                        .animate(
+                            {
+                             opacity: 0,
+                             left : '-100%'
+                            }, 800, function() {
+                                $('#' + activeChildID).hide();
+                              
+                                $('#' + previousChildID).css({top : 0, opacity: 0, left : '100%'})
+                                    .stop()
+                                    //.show()
+                                    .css({display:'inline-block'})
+                                    .animate(
+                                        { 
+                                            opacity: 1, left : 0 
+                                        }, 800, 
+                                        function() {
+                                            controllerButtonState();
+                                    
+                                        }
+                                    );
+                            }
+                        );
+                       
+                    } else if (paginationType == 'vertical') {
+                        // Begin active child down page animation.
+                        
+                        $('#' + activeChildID).css({opacity : 1})
+                        .animate(
+                            {
+                             opacity: 0,
+                             top : '700'
+                            }, 800, function() {
+                                $('#' + activeChildID).hide();
+                              
+                                $('#' + previousChildID).css({top : '-700', opacity: 0})
+                                    .stop()
+                                    //.show()
+                                    .css({display:'inline-block'})
+                                    .animate(
+                                        { 
+                                            opacity: 1, top : 0 
+                                        }, 800,
+                                        function() {
+                                            controllerButtonState();
+                                        }
+                                    );
+                            }
+                        );
+                       
+                    }
                          
                 }
                      

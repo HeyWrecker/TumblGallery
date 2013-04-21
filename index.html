@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>TumblGallery 1.3.0</title>
+        <title>TumblGallery 1.3.1</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
 
@@ -20,23 +20,7 @@
         <script src="js/views.js"></script>
         <script src="js/controllers.js"></script>
         
-        <style>
-            #nextPage {
-                width: 60px;
-                height: 30px;
-                border-top-left-radius :75px;
-                border-top-right-radius: 75px;   
-            }
-            
-            #prevPage {
-                width: 60px;
-                height: 30px;
-                border-bottom-left-radius :50px;
-                border-bottom-right-radius: 50px;   
-               
-            }
-        </style>
-        
+
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -49,15 +33,16 @@
             
             var blogInfo = [
                 {
-                    'blogName'      : 'Your Tumblr Blog Name',
-                    'blogKey'       : 'Your Tumblr API Key',
-                    'postFilter'    : 'html',
-                    'postType'      : 'photo',
-                    'noteInfo'      : 'true',
-                    'postOffset'    : '0',
-                    'postLimit'     : '',
-                    'tagFilter'     : '',
-                    'filterList'    : 'All,Category 1, Category 2, Category 3'
+                    'blogName'          : 'Your Tumblr Blog Name',
+                    'blogKey'           : 'Your Tumblr API Key',
+                    'postFilter'        : 'html',
+                    'postType'          : 'photo',
+                    'noteInfo'          : 'true',
+                    'postOffset'        : '0',
+                    'postLimit'         : '',
+                    'tagFilter'         : '',
+                    'filterList'        : 'All,Category 1, Category 2, Category 3',
+                    'paginationType'    : 'horizontal' //valid options are horizontal or vertical
                 }
             ];
             
@@ -78,12 +63,11 @@
         
         <div class="container-fluid">
             <div class="row-fluid">
-                <div class="span9">
+                <div class="span12">
                         <div class="navbar">
                             <div class="navbar-inner">
                                 <div class="pull-right">
-                                 <button id="nextPage" class="btn btn-success" value="1"><i class="icon-chevron-up"></i></button>
-                                 <button id="prevPage" class="btn btn-success disabled"><i class="icon-chevron-down"></i></button>
+                                 
                                      <div class="btn-group">
                                         <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
                                             Categories
@@ -96,8 +80,10 @@
                         </div>
                 </div>
             </div>
-            <div class="row-fluid">
-                <article id="blogContent" class="span12"></article>
+            <div class="row-fluid" style="position: relative;">
+                <button id="prevPage" class="btn btn-success disabled span1" style="display: none"><i class="icon-chevron-down"></i></button>
+                <article id="blogContent" class="span10 pagination-centered"></article>
+                <button id="nextPage" class="btn btn-success span1" value="1" style="display: none"><i class="icon-chevron-up"></i></button>
             </div>
             
             <!-- Modal -->
@@ -117,8 +103,8 @@
             </div>
                         
             <div class="modal-footer">
-                <button id="prevButton" class="btn btn-primary">&laquo;</button>
-                <button id="nextButton" class="btn btn-primary">&raquo;</button>
+                <button id="prevButton" class="btn btn-primary"><i class="icon-chevron-left icon-white"></i></button>
+                <button id="nextButton" class="btn btn-primary"><i class="icon-chevron-right icon-white"></i></button>
                 <button id="closeButton" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
                            
             </div>

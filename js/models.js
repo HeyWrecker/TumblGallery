@@ -9,6 +9,9 @@ function loadTumblogLimit(blog, apiKey, filter, type, notes, offset, limit) {
         dataType: "jsonp",
         success: function(data) {
             loadTumblogPosts(data, false);
+        },
+        error: function(data) {
+            console.log(data);
         }
 
     })
@@ -26,12 +29,17 @@ function loadTumblogPosts(data, isFilter) {
                     initialOffset:blogInfo[0].postOffset
                     }),
                 dataType: "jsonp",
+                error: function(data) {
+                    console.log(data);  
+                },
                 success: function(data) {
                     isModelDataSuccess = modelData(data);
-                    
+                   
                     if(isModelDataSuccess === true) {
                         controllerButtonState();
                         $('#blogContent').fadeToggle();
+                        $('#nextPage').fadeToggle();
+                        $('#prevPage').fadeToggle();
                     }
                     
                 }
@@ -53,6 +61,8 @@ function loadTumblogPosts(data, isFilter) {
                 if(isModelDataSuccess === true) {
                     controllerButtonState();
                     $('#blogContent').fadeToggle();
+                    $('#nextPage').fadeToggle();
+                    $('#prevPage').fadeToggle();
                 }
             }
         });

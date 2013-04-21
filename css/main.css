@@ -2,7 +2,7 @@
     height: 700px;
     overflow: hidden;
 }
-            
+
 .thumbnails [class^="span"] {
     border-left: 0;
 }
@@ -53,4 +53,24 @@ ul[id*='portfolioList_'] [class*="span"]:first-child {
     transform: scale(1.05);
     z-index: 100;  
     opacity: 1;
+}
+
+#nextPage, #prevPage {
+    width: 45px;
+    height: 45px;
+    border-top-left-radius :75px;
+    border-top-right-radius: 75px;
+    border-bottom-left-radius :75px;
+    border-bottom-right-radius :75px;
+    margin-top: 280px;
+}
+
+#nextPage.horizontal, #prevPage.horizontal {
+   /* position: absolute;
+    top: 40%;
+    left: 75%;
+    z-index: 5;*/
+    transform:rotate(90deg);
+-ms-transform:rotate(90deg); /* IE 9 */
+-webkit-transform:rotate(90deg); /* Safari and Chrome */
 }
