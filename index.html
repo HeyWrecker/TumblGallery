@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>TumblGallery 1.3.1</title>
+        <title>TumblGallery 1.3.2</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
 
@@ -41,16 +41,39 @@
                     'postOffset'        : '0',
                     'postLimit'         : '',
                     'tagFilter'         : '',
-                    'filterList'        : 'All,Category 1, Category 2, Category 3',
+                    'filterList'        : 'All,Category 1,Category 2, Category 3'
                     'paginationType'    : 'horizontal' //valid options are horizontal or vertical
                 }
             ];
             
-            
-            
-            $('document').ready(function () {
-        	    if(typeof(Storage)!=="undefined") {
-                   loadTumblogLimit(blogInfo[0].blogName, blogInfo[0].blogKey, blogInfo[0].postFilter, blogInfo[0].postType);
+           $('document').ready(function () {
+               
+                if(typeof(Storage)!=="undefined") {
+                    var isValidFilter = false;
+                    var queryFilter = getQueryVariable('filter');
+                   
+                    if(queryFilter !== false) {
+                        queryFilter = queryFilter.replace('%20', ' ');
+                        
+                        var filterArray     = blogInfo[0].filterList.split(',');
+                        for(var key in filterArray) {
+                            if(queryFilter.toLowerCase() == filterArray[key].toLowerCase()) {
+                                isValidFilter = true;
+                                controllerFilter(false, queryFilter);
+                            }
+                        }
+                        
+                        if(isValidFilter == false) {
+                            var content = '<div class="alert alert-error alert-block"><h4>Say What?</h4><p>It looks like you tried messing with my URL parameters.</p></div>'
+                            
+                            $('#blogContent').html(content);
+                        }
+                        
+                        
+                    } else {
+                        loadTumblogLimit(blogInfo[0].blogName, blogInfo[0].blogKey, blogInfo[0].postFilter, blogInfo[0].postType);
+                    }
+                  
                 } else {
                     alert('Your browser does not support the HTML5 sessionStorage object.');
                 }

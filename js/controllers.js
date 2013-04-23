@@ -18,24 +18,43 @@ function controllerAddListeners() {
 }
     
 
-function controllerFilter(event) {
-    $('[data-toggle="dropdown"]').parent().removeClass('open');
-    //$('a.filter').unbind('click');
-    controllerRemoveListeners();
-    
-    var dataSet = JSON.parse(sessionStorage.blogDataSet);
-    var postLimit = dataSet.blogInfo.postCount;
-    var filterString = event.currentTarget.childNodes.item(0).textContent;
-    
-    if(filterString == 'All') {
-        loadTumblogLimit(blogInfo[0].blogName, blogInfo[0].blogKey, blogInfo[0].postFilter, blogInfo[0].postType);
-    } else {
-        var data = {
-            "postLimit"     : postLimit,
-            "filterString"  : filterString
+function controllerFilter(event, filterString) {
+    if(event !== false) {
+        $('[data-toggle="dropdown"]').parent().removeClass('open');
+       
+        controllerRemoveListeners();
+        
+        var dataSet = JSON.parse(sessionStorage.blogDataSet);
+        var postLimit = dataSet.blogInfo.postCount;
+        var filterString = event.currentTarget.childNodes.item(0).textContent;
+        
+        if(filterString == 'All') {
+            loadTumblogLimit(blogInfo[0].blogName, blogInfo[0].blogKey, blogInfo[0].postFilter, blogInfo[0].postType);
+        } else {
+            var data = {
+                "postLimit"     : postLimit,
+                "filterString"  : filterString
+            }
+        
+            loadTumblogPosts(data, true);
         }
-    
-        loadTumblogPosts(data, true);
+    } else {
+        controllerRemoveListeners();
+        
+        var dataSet = JSON.parse(sessionStorage.blogDataSet);
+        var postLimit = dataSet.blogInfo.postCount;
+        var filterString = filterString;
+        
+        if(filterString == 'All') {
+            loadTumblogLimit(blogInfo[0].blogName, blogInfo[0].blogKey, blogInfo[0].postFilter, blogInfo[0].postType);
+        } else {
+            var data = {
+                "postLimit"     : postLimit,
+                "filterString"  : filterString
+            }
+        
+            loadTumblogPosts(data, true);
+        }
     }
    
    if($('#blogContent').children().length <= 1) {

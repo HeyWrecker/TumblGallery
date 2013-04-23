@@ -1,3 +1,13 @@
+function getQueryVariable(filterString) {
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i=0;i<vars.length;i++) {
+        var pair = vars[i].split("=");
+        if(pair[0] == filterString){return pair[1];}
+    }
+    return(false);
+}
+
 function loadTumblogLimit(blog, apiKey, filter, type, notes, offset, limit) {
     var test = $.ajax({
         url: 'http://api.tumblr.com/v2/blog/' + blog + '/posts?filter=' + filter + '&type=' + type + '&notes_info=' + notes + '&offset=' + offset + '&limit=' + limit,
