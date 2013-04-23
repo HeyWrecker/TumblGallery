@@ -1,5 +1,11 @@
 TumblGallery
 ============
+Version 1.3.2
+(4/22/2013)
+
+- Roughed in filtering via passed URL parameter.
+- Check URL parameter for Category List match.
+
 Version 1.3.1
 (4/21/2013)
 - Added fade transition between paging.
